@@ -54,7 +54,7 @@ if api_key:
         # --- 7. TALKING TO THE AI ---
         with st.spinner("Analyzing question..."):
             try:
-                response = client.models.generate_content(model= 'gemini-2.5-flash',contents=user_question)
+                response = client.models.generate_content(model= 'gemini-2.5-flash',contents=combined_prompt)
                 st.markdown("### 💡 Tutor Response:")
                 st.info(response.text)
             except Exception as e:

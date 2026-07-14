@@ -28,7 +28,7 @@ st.write(f"**Mode:** {academic_phase} | {primary_goal} | {tutor_persona}")
 st.markdown("---")
 
 # --- 4. THE BRAIN CONNECTION ---
-api_key = st.text_input("Enter your Google Gemini API Key to activate the AI:", type="password")
+api_key = st.secrets["GEMINI_API_KEY"] client = genai.Client(api_key=api_key)
 
 if api_key:
     client = genai.Client(api_key=api_key) 

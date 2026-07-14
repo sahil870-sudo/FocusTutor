@@ -1,5 +1,5 @@
 import streamlit as st
-import google.generativeai as genai
+import google.genai as genai
 
 # --- 1. PAGE CONFIGURATION ---
 st.set_page_config(page_title="FocusTutor AI", page_icon="📚", layout="centered")
@@ -31,8 +31,7 @@ st.markdown("---")
 api_key = st.text_input("Enter your Google Gemini API Key to activate the AI:", type="password")
 
 if api_key:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-3.5-flash') 
+    client = genai.Client(api_key=api_key) 
 
     # --- 5. THE CHAT INTERFACE ---
     user_question = st.text_area("Ask your physics, chemistry, or math question:")
@@ -55,7 +54,7 @@ if api_key:
         # --- 7. TALKING TO THE AI ---
         with st.spinner("Analyzing question..."):
             try:
-                response = model.generate_content(combined_prompt)
+                response = client.models.generate_content(model= 'gemini-2.5-flash',contents=user_question)
                 st.markdown("### 💡 Tutor Response:")
                 st.info(response.text)
             except Exception as e:

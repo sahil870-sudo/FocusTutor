@@ -1,10 +1,10 @@
 import streamlit as st
-import google.genai as genai
+from google import genai
 
-# --- 1. PAGE CONFIGURATION ---
-st.set_page_config(page_title="FocusTutor AI", page_icon="📚", layout="centered")
+# --- CONFIGURATION ---
+st.set_page_config(page_title="FocusTutor AI", page_icon="🤖", layout="centered")
 
-# --- 2. SIDEBAR: THE CONTEXT MENU ---
+# --- SIDEBAR: THE CONTEXT MENU ---
 st.sidebar.title("⚙️ Tutor Settings")
 
 academic_phase = st.sidebar.selectbox(
@@ -12,10 +12,11 @@ academic_phase = st.sidebar.selectbox(
     ["Class 11", "Class 12", "Dropper"]
 )
 
-primary_goal = st.sidebar.selectbox(
+primary_target = st.sidebar.selectbox(
     "Primary Target",
     ["Board Exams", "JEE Mains", "JEE Advanced"]
 )
+import streamli
 
 tutor_persona = st.sidebar.selectbox(
     "Teaching Style",

@@ -16,50 +16,43 @@ primary_target = st.sidebar.selectbox(
     "Primary Target",
     ["Board Exams", "JEE Mains", "JEE Advanced"]
 )
-import streamli
 
-tutor_persona = st.sidebar.selectbox(
+teaching_style = st.sidebar.selectbox(
     "Teaching Style",
-    ["Hint Mode (Socratic)", "Explain Like I'm 5", "Strict Coach"]
+    ["Hint Mode (Socratic)", "Direct Answer"]
 )
 
-# --- 3. MAIN UI: INITIALIZATION ---
-st.title("📚 FocusTutor AI")
-st.write(f"**Mode:** {academic_phase} | {primary_goal} | {tutor_persona}")
-st.markdown("---")
+# --- MAIN INTERFACE ---
+st.title("FocusTutor AI")
 
-# --- 4. THE BRAIN CONNECTION ---
-api_key = st.secrets["GEMINI_API_KEY"] 
-client = genai.Client(api_key=api_key)
+user_question = st.text_area("Ask your physics, chemistry, or math question:")
 
-if api_key:
-    client = genai.Client(api_key=api_key) 
+system_rules = f"""
+You are an expert tutor for {academic_phase} students in India preparing for {primary_target}.
+The student wants you to use the teaching style: {teaching_style}.
+If the style is Socratic, guide them with hints rather than giving direct formulas or answers immediately.
+Keep your tone encouraging, supportive, and scientifically accurate.
+"""
 
-    # --- 5. THE CHAT INTERFACE ---
-    user_question = st.text_area("Ask your physics, chemistry, or math question:")
-    
-    if st.button("Ask Tutor") and user_question:
-        
-        # --- 6. THE BOUNCER LOGIC ---
-        system_rules = f"""
-        You are a highly focused, expert tutor for an Indian student in {academic_phase} preparing for {primary_goal}.
-        Your teaching style must strictly be: {tutor_persona}.
-        
-        CRITICAL RULES:
-        1. You are strictly an academic tutor. 
-        2. You must ONLY answer questions related to Physics, Chemistry, and Mathematics.
-        3. If the user asks about movies, video games, general chatting, code formatting, or anything outside the PCM syllabus, you must aggressively refuse and tell them to get back to studying.
-        """
-        
-        combined_prompt = f"{system_rules}\n\nStudent Question: {user_question}"
-        
-        # --- 7. TALKING TO THE AI ---
-        with st.spinner("Analyzing question..."):
-            try:
-                response = client.models.generate_content(model= 'gemini-2.0-flash',contents=user_question,config={'system_instruction': system_rules})
-                st.markdown("### 💡 Tutor Response:")
-                st.info(response.text)
-            except Exception as e:
-                st.error(f"API Error. Check your key or try again. Details: {e}")
-else:
-    st.warning("Please enter your API key to wake up the AI tutor.")
+if st.button("Ask Tutor"):
+    if not user_question.strip():
+        st.warning("Please type a question first!")
+    else:
+        try:
+            with st.spinner("Tutor is thinking..."):
+                api_key = st.secrets["GEMINI_API_KEY"]
+                client = genai.Client(api_key=api_key)
+                
+                response = client.models.generate_content(
+                    model='gemini-2.0-flash',
+                    contents=user_question,
+                    config={
+                        'system_instruction': system_rules
+                    }
+                )
+                
+                st.subheader("Tutor Response:")
+                st.write(response.text)
+                
+        except Exception as e:
+            st.error(f"API Error. Check your key or try again. Details: {e}")
